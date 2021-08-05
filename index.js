@@ -1,4 +1,5 @@
 import express from 'express';
+import { read } from './jsonFileStorage.mjs';
 
 const app = express();
 
@@ -21,7 +22,21 @@ const handleTwoDiceRollReq = (req, res) => {
   res.send(`dice rolled ${diceRoll1} and ${diceRoll2} `);
 };
 
+const handleLocationReq = (req, res) => {
+  console.log(req.params);
+  res.send(`city: ${req.params.city}<br>postal code: ${req.params.postalCode}`);
+};
+
+const handleNameReq = (req, res) => {
+  read('data.json', (err, data) => {
+    res.send(data.names[req.params.index]);
+  });
+};
+
 app.get('/', handleincomingRequest);
 app.get('/dice-rolls', handleDiceRollReq);
 app.get('/two-dice-rolls', handleTwoDiceRollReq);
+app.get('/location/:city/:postalCode', handleLocationReq);
+app.get('/names/:index', handleNameReq);
+
 app.listen(3004);
